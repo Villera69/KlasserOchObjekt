@@ -128,6 +128,7 @@ static void MainMenu(ref Bank bank){
                     MainMenu(ref bank);
                 break;
             case "3":
+                    Console.Clear();
                     Console.Write("To connect an account to a customer, enter the customers 12 digit social security number: ");
                     currentID = Console.ReadLine();
 
@@ -139,6 +140,7 @@ static void MainMenu(ref Bank bank){
                     MainMenu(ref bank);
                 break;
             case "4":
+                    Console.Clear();
                     Console.WriteLine("Enter the first and last name of the customer which account you want to check");
 
                     Console.Write("Please enter the customers first name: ");
@@ -157,6 +159,7 @@ static void MainMenu(ref Bank bank){
                     MainMenu(ref bank);
                 break;
             case "5":
+                Console.Clear();
                 Console.Write("Enter the owners social security number to change the balance of that customers account: ");
                 ownerID = Console.ReadLine();
 
@@ -168,9 +171,6 @@ static void MainMenu(ref Bank bank){
                     }
                 }
                 MainMenu(ref bank);
-                break;
-            case "6":
-
                 break;
             default:
                 break;
