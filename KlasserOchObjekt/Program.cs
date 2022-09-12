@@ -42,6 +42,10 @@ public class Account {
     public string GetOwnerID(){
         return ownerID;
     }
+
+    public double GetBalance(){
+        return balance;
+    }
     public void ShowBalance(){
         Console.Write(balance);
     }
@@ -82,14 +86,21 @@ static void MainMenu(ref Bank bank){
         string ownerID;
         int accountNumber;
         string currentID;
+        double totalBalance = 0;
+
+        for(int a = 0; a < bank.accounts.Count; a++){
+            totalBalance += bank.accounts[a].GetBalance();
+        }
 
         Console.Clear();
+        Console.WriteLine("Currently signed up customers: " + bank.customers.Count + "\n Current revenue of the bank: " + totalBalance);
         Console.WriteLine("Please choose what you want to do by pressing a number and then pressing enter.");
         Console.WriteLine("(1) Sign up a new customer");
         Console.WriteLine("(2) Sign up a new account");
         Console.WriteLine("(3) Connect an account and a customer");
         Console.WriteLine("(4) Show customer and connected account");
         Console.WriteLine("(5) Change the balance of an account");
+        
 
         switch (Console.ReadLine())
         {
@@ -156,7 +167,9 @@ static void MainMenu(ref Bank bank){
                         bank.accounts[b].AddToBalance(addBalance);
                     }
                 }
-                Console.ReadLine();
+                MainMenu(ref bank);
+                break;
+            case "6":
 
                 break;
             default:
