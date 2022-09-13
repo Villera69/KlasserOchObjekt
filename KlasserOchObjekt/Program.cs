@@ -100,7 +100,7 @@ static void MainMenu(ref Bank bank){
         Console.WriteLine("(3) Connect an account and a customer");
         Console.WriteLine("(4) Show customer and connected account");
         Console.WriteLine("(5) Change the balance of an account");
-        
+        Console.WriteLine("(6) Close the program");
 
         switch (Console.ReadLine())
         {
@@ -171,6 +171,8 @@ static void MainMenu(ref Bank bank){
                     }
                 }
                 MainMenu(ref bank);
+                break;
+            case "6":
                 break;
             default:
                 break;
