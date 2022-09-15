@@ -1,4 +1,5 @@
-﻿using System.Dynamic;
+﻿using Microsoft.VisualBasic.CompilerServices;
+using System.Dynamic;
 using System.Reflection.Metadata.Ecma335;
 using System.Collections.Generic;
 
@@ -79,13 +80,88 @@ static class Program {
         MainMenu(ref bank);
 }
 
+static void SignCustomer(ref Bank bank){
+    string firstName;
+    string lastName;
+    string id;
+    int accountNumber = -1;
+    Console.Clear();
+    Console.Write("Please enter the customers first name: ");
+    firstName = Console.ReadLine();
+
+    Console.Write("Please enter the customers last name: ");
+    lastName = Console.ReadLine();
+
+    Console.Write("Please enter the customers 12 digit social security number: ");
+    id = Console.ReadLine();
+    bank.customers.Add(new Customer(firstName, lastName, id, accountNumber));
+
+    MainMenu(ref bank);
+}
+
+static void SignAccount(ref Bank bank){
+    string ownerID;
+    Console.Clear();
+    Console.Write("To create an account, please enter the customers 12 digit social security number: ");
+    ownerID = Console.ReadLine();
+
+    bank.accounts.Add(new Account(ownerID, 0.00, 0));
+    MainMenu(ref bank);
+}
+
+static void ConnectAccAndCustomer(ref Bank bank){
+    string currentID;
+    Console.Clear();
+    Console.Write("To connect an account to a customer, enter the customers 12 digit social security number: ");
+    currentID = Console.ReadLine();
+
+    for(int a = 0; a < bank.accounts.Count; a++){
+        if(bank.accounts[a].GetOwnerID() == currentID){
+            bank.customers[a].SetAccountNumber(a);
+        }
+    }
+    MainMenu(ref bank);
+}
+
+static void ShowCustomer(ref Bank bank){
+    string firstName;
+    string lastName;
+    Console.Clear();
+    Console.WriteLine("Enter the first and last name of the customer which account you want to check\n");
+
+    Console.Write("Please enter the customers first name: ");
+    firstName = Console.ReadLine();
+
+    Console.Write("Please enter the customers last name: ");
+    lastName = Console.ReadLine();
+    for(int b = 0; b < bank.customers.Count; b++){
+        if(firstName == bank.customers[b].GetFirstName() && lastName == bank.customers[b].GetLastName()){
+        bank.customers[b].PrintCustomer();
+        }
+        else{
+        }
+    }
+    Console.ReadLine();
+    MainMenu(ref bank);
+}
+
+static void ChangeAccBalance(ref Bank bank){
+    string ownerID;
+    Console.Clear();
+    Console.Write("Enter the owners social security number to change the balance of that customers account: ");
+    ownerID = Console.ReadLine();
+
+    for(int b = 0; b < bank.customers.Count; b++){
+        if(ownerID == bank.accounts[b].GetOwnerID()){
+            Console.Write("Type the amount you want to add to the accont balance: ");
+            double addBalance = double.Parse(Console.ReadLine());
+            bank.accounts[b].AddToBalance(addBalance);
+        }
+    }
+    MainMenu(ref bank);
+}
+
 static void MainMenu(ref Bank bank){
-        string firstName;
-        string lastName;
-        string id;
-        string ownerID;
-        int accountNumber;
-        string currentID;
         double totalBalance = 0;
 
         for(int a = 0; a < bank.accounts.Count; a++){
@@ -93,7 +169,7 @@ static void MainMenu(ref Bank bank){
         }
 
         Console.Clear();
-        Console.WriteLine("Currently signed up customers: " + bank.customers.Count + "\n Current revenue of the bank: " + totalBalance);
+        Console.WriteLine("Currently signed up customers: " + bank.customers.Count + "\nCurrent revenue of the bank: " + totalBalance + "\n");
         Console.WriteLine("Please choose what you want to do by pressing a number and then pressing enter.");
         Console.WriteLine("(1) Sign up a new customer");
         Console.WriteLine("(2) Sign up a new account");
@@ -105,72 +181,19 @@ static void MainMenu(ref Bank bank){
         switch (Console.ReadLine())
         {
             case "1":
-                    accountNumber = -1;
-                    Console.Clear();
-                    Console.Write("Please enter the customers first name: ");
-                    firstName = Console.ReadLine();
-
-                    Console.Write("Please enter the customers last name: ");
-                    lastName = Console.ReadLine();
-
-                    Console.Write("Please enter the customers 12 digit social security number: ");
-                    id = Console.ReadLine();
-                    bank.customers.Add(new Customer(firstName, lastName, id, accountNumber));
-
-                    MainMenu(ref bank);
+                    SignCustomer(ref bank);
                 break;
             case "2":
-                    Console.Clear();
-                    Console.Write("To create an account, please enter the customers 12 digit social security number: ");
-                    ownerID = Console.ReadLine();
-
-                    bank.accounts.Add(new Account(ownerID, 0.00, 0));
-                    MainMenu(ref bank);
+                    SignAccount(ref bank);
                 break;
             case "3":
-                    Console.Clear();
-                    Console.Write("To connect an account to a customer, enter the customers 12 digit social security number: ");
-                    currentID = Console.ReadLine();
-
-                    for(int a = 0; a < bank.accounts.Count; a++){
-                        if(bank.accounts[a].GetOwnerID() == currentID){
-                            bank.customers[a].SetAccountNumber(a);
-                        }
-                    }
-                    MainMenu(ref bank);
+                    ConnectAccAndCustomer(ref bank);
                 break;
             case "4":
-                    Console.Clear();
-                    Console.WriteLine("Enter the first and last name of the customer which account you want to check");
-
-                    Console.Write("Please enter the customers first name: ");
-                    firstName = Console.ReadLine();
-
-                    Console.Write("Please enter the customers last name: ");
-                    lastName = Console.ReadLine();
-                    for(int b = 0; b < bank.customers.Count; b++){
-                        if(firstName == bank.customers[b].GetFirstName() && lastName == bank.customers[b].GetLastName()){
-                        bank.customers[b].PrintCustomer();
-                        }
-                        else{
-                        }
-                    }
-                    Console.ReadLine();
-                    MainMenu(ref bank);
+                    ShowCustomer(ref bank);
                 break;
             case "5":
-                Console.Clear();
-                Console.Write("Enter the owners social security number to change the balance of that customers account: ");
-                ownerID = Console.ReadLine();
-
-                for(int b = 0; b < bank.customers.Count; b++){
-                    if(ownerID == bank.accounts[b].GetOwnerID()){
-                        Console.Write("Type the amount you want to add to the accont balance: ");
-                        double addBalance = double.Parse(Console.ReadLine());
-                        bank.accounts[b].AddToBalance(addBalance);
-                    }
-                }
-                MainMenu(ref bank);
+                ChangeAccBalance(ref bank);
                 break;
             case "6":
                 break;
