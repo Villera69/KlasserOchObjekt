@@ -30,7 +30,7 @@ public class Customer{
     }
 
     public void PrintCustomer(){
-        Console.WriteLine("Customer name: " + firstName + lastName);
+        Console.WriteLine("Customer name: " + firstName + " " +  lastName);
         Console.WriteLine("The customers account number is " + accountNumber);
     }
 }
@@ -158,13 +158,14 @@ static void SignCustomer(ref Bank bank){
         Console.Clear();
         Console.Write("Please enter the customers 12 digit social security number: ");
         id = Console.ReadLine();
-        isOnlyNumbers = int.TryParse(id, out _);
-        if(id.Length != 12 && isOnlyNumbers){
-            Console.Clear();
-            Console.WriteLine("Hey! You need to type in a social security number with 12 digits! Press enter to try again");
+        isOnlyNumbers = long.TryParse(id, out _);
+        if(isOnlyNumbers && id.Length == 12){
+            break;
         }
         else{
-            break;
+            Console.Clear();
+            Console.WriteLine("Hey! You need to type in a social security number with 12 numbers! Press enter to try again");
+            Console.ReadLine();
         }
     }
     accountNumber++;
@@ -175,17 +176,18 @@ static void SignCustomer(ref Bank bank){
 static void SignAccount(ref Bank bank){
     string ownerID;
     bool isOnlyNumbers;
-   while(true){
+    while(true){
         Console.Clear();
         Console.Write("To create an account, please enter the customers 12 digit social security number: ");
         ownerID = Console.ReadLine();
-        isOnlyNumbers = int.TryParse(ownerID, out _);
-        if(ownerID.Length != 12 && isOnlyNumbers){
-            Console.Clear();
-            Console.WriteLine("Hey! You need to type in a social security number with 12 digits! Press enter to try again");
+        isOnlyNumbers = long.TryParse(ownerID, out _);
+        if(isOnlyNumbers && ownerID.Length == 12){
+            break;
         }
         else{
-            break;
+            Console.Clear();
+            Console.WriteLine("Hey! You need to type in a social security number with 12 numbers! Press enter to try again");
+            Console.ReadLine();
         }
     }
     bank.accounts.Add(new Account(ownerID, 0.00, 0));
@@ -194,10 +196,21 @@ static void SignAccount(ref Bank bank){
 
 static void ConnectAccAndCustomer(ref Bank bank){
     string currentID;
+    bool isOnlyNumbers;
+    while(true){
     Console.Clear();
     Console.Write("To connect an account to a customer, enter the customers 12 digit social security number: ");
     currentID = Console.ReadLine();
-
+    isOnlyNumbers = long.TryParse(currentID, out _);
+    if(isOnlyNumbers && currentID.Length == 12){
+        break;
+    }
+    else{
+        Console.Clear();
+        Console.WriteLine("Hey! You need to type in a social security number with 12 numbers! Press enter to try again");
+        Console.ReadLine();
+    }
+    }
     for(int a = 0; a < bank.accounts.Count; a++){
         if(bank.accounts[a].GetOwnerID() == currentID){
             bank.customers[a].SetAccountNumber(a);
@@ -210,13 +223,34 @@ static void ShowCustomer(ref Bank bank){
     string firstName;
     string lastName;
     Console.Clear();
-    Console.WriteLine("Enter the first and last name of the customer which account you want to check\n");
-
-    Console.Write("Please enter the customers first name: ");
-    firstName = Console.ReadLine();
-
-    Console.Write("Please enter the customers last name: ");
-    lastName = Console.ReadLine();
+    Console.WriteLine("Enter the first and last name of the owner of the account you want to check. Press enter to continue\n");
+    Console.ReadLine();
+    while (true){
+        Console.Clear();
+        Console.Write("Please enter the customers first name: ");
+        firstName = Console.ReadLine();
+        if (firstName.Length != 0)
+        {
+            break;
+        }
+        else{
+            Console.WriteLine("You need to type in a name with at least 1 character. Press enter to try again");
+            Console.ReadLine();
+        }
+    }
+    while (true){
+        Console.Clear();
+        Console.Write("Please enter the customers last name: ");
+        lastName = Console.ReadLine();
+        if (lastName.Length != 0)
+        {
+            break;
+        }
+        else{
+            Console.WriteLine("You need to type in a name with at least 1 character. Press enter to try again");
+            Console.ReadLine();
+        }
+    }
     for(int b = 0; b < bank.customers.Count; b++){
         if(firstName == bank.customers[b].GetFirstName() && lastName == bank.customers[b].GetLastName()){
         bank.customers[b].PrintCustomer();
@@ -230,16 +264,51 @@ static void ShowCustomer(ref Bank bank){
 
 static void ChangeAccBalance(ref Bank bank){
     string ownerID;
-    Console.Clear();
-    Console.Write("Enter the owners social security number to change the balance of that customers account: ");
-    ownerID = Console.ReadLine();
-
+    bool isOnlyNumbers;
+    bool isACustomer = false;
+    double addBalance;
+    while(true){
+        Console.Clear();
+        Console.Write("Enter the owners social security number to change the balance of that customers account: ");
+        ownerID = Console.ReadLine();
+        isOnlyNumbers = long.TryParse(ownerID, out _);
+        if(isOnlyNumbers && ownerID.Length == 12){
+            break;
+        }
+        else{
+            Console.Clear();
+            Console.WriteLine("Hey! You need to type in a social security number with 12 numbers! Press enter to try again");
+            Console.ReadLine();
+        }
+    }
     for(int b = 0; b < bank.customers.Count; b++){
         if(ownerID == bank.accounts[b].GetOwnerID()){
-            Console.Write("Type the amount you want to add to the accont balance: ");
-            double addBalance = double.Parse(Console.ReadLine());
+            while (true)
+            {
+                Console.Clear();
+                try
+                {
+                    Console.Write("Type the amount you want to add to the accont balance: ");
+                    addBalance = double.Parse(Console.ReadLine());
+                    break;
+                }
+                catch
+                {
+                    Console.WriteLine("Hey! A balance needs to be a number! Press enter to attempet that once more.");
+                    Console.ReadLine();
+                }
+
+            }
             bank.accounts[b].AddToBalance(addBalance);
+            isACustomer = true;
         }
+    }
+
+    if (!isACustomer)
+    {
+        Console.WriteLine("Sorry, the social security number entered does not match any customer in the database. Press enter to try again.");
+        Console.ReadLine();
+        ChangeAccBalance(ref bank);
     }
     MainMenu(ref bank);
 }
