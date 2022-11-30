@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic.CompilerServices;
+﻿using System.Transactions;
+using Microsoft.VisualBasic.CompilerServices;
 using System.Dynamic;
 using System.Reflection.Metadata.Ecma335;
 using System.Collections.Generic;
@@ -35,10 +36,9 @@ public class Customer{ //Creates the Customer class. "Customer" containes a firs
     }
 }
 
-public class Account { // Creates the Account class. An account contains an owner id (the customers social security number), a balance and latest transaction (never used in the program though)
-    string ownerID;
-    double balance;
-    int latestTransaction;
+public class Account { // Creates the Account class. An account contains an owner id (the customers social security number) and a balance.
+    public string ownerID;
+    public double balance;
 
     public string GetOwnerID(){
         return ownerID;
@@ -55,10 +55,39 @@ public class Account { // Creates the Account class. An account contains an owne
         balance += addBalance;
     }
 
-    public Account(String ownerID, double balance, int latestTransaction) {
+    /*public Account(String ownerID, double balance) {
         this.ownerID = ownerID;
         this.balance = balance;
+    }*/
+}
+
+public class SavingsAccount : Account{
+    double interest = 1.03;
+
+    public SavingsAccount(String ownerID, double balance){
+        this.ownerID = ownerID;
+        this.balance = balance;
+    }
+}
+public class TransactionAccount : Account{
+    int latestTransaction;
+    public List<int> TransactionList;
+    public TransactionAccount(String ownerID, double balance){
+        this.ownerID = ownerID;
+        this.balance = balance;
+    }
+
+    public void Transaction(int latestTransaction){
         this.latestTransaction = latestTransaction;
+        TransactionList.Add(latestTransaction);
+    }
+
+    public void PrintTransactionHistory(){
+        Console.WriteLine("Transactions:\n");
+        for (int i = 0; i < TransactionList.Count; i++)
+        {
+            Console.WriteLine(i+1 + ". " + TransactionList[i]);
+        }
     }
 }
 
@@ -70,7 +99,6 @@ public class Bank { // creates the Bank class. A bank contains a list of custome
     customers = new List<Customer>();
     accounts = new List<Account>();
     }
-
 }
 
 static class Program {
@@ -91,7 +119,7 @@ static void MainMenu(ref Bank bank){
         Console.WriteLine("Currently signed up customers: " + bank.customers.Count + "\nCurrent revenue of the bank: " + totalBalance + "\n");
         Console.WriteLine("Please choose what you want to do by pressing a number and then pressing enter.");
         Console.WriteLine("(1) Sign up a new customer");
-        Console.WriteLine("(2) Sign up a new account");
+        Console.WriteLine("(2) Create a new account");
         Console.WriteLine("(3) Connect an account and a customer");
         Console.WriteLine("(4) Show customer and connected account");
         Console.WriteLine("(5) Change the balance of an account");
@@ -129,7 +157,7 @@ static void SignCustomer(ref Bank bank){
     string firstName;
     string lastName;
     string id;
-    bool isOnlyNumbers = true;
+    bool isOnlyNumbers;
     int accountNumber = -1;
     while (true){
         Console.Clear();
@@ -179,6 +207,26 @@ static void SignCustomer(ref Bank bank){
 static void SignAccount(ref Bank bank){
     string ownerID;
     bool isOnlyNumbers;
+    bool savingsAccount = false;
+    Console.Clear();
+    Console.WriteLine("What kind of account would you like to create? Press the correspondning number and then press enter");
+    Console.WriteLine("\n (1) Savings account");
+    Console.WriteLine("\n (2) Transaction account");
+    switch (Console.ReadLine())
+    {
+        case "1":
+            savingsAccount = true;
+            break;
+        case "2":
+            savingsAccount = false;
+            break;
+        default:
+            Console.Clear();
+            Console.WriteLine("You need to choose one of the two account types by entering a number and then pressing enter. Press enter to attempt it again!");
+            Console.ReadLine();
+            SignAccount(ref bank);
+            break;
+    }
     while(true){
         Console.Clear();
         Console.Write("To create an account, please enter the customers 12 digit social security number: ");
@@ -193,7 +241,13 @@ static void SignAccount(ref Bank bank){
             Console.ReadLine();
         }
     }
-    bank.accounts.Add(new Account(ownerID, 0.00, 0));
+    if (savingsAccount)
+    {
+        bank.accounts.Add(new SavingsAccount(ownerID, 0.00));
+    }
+    else if(!savingsAccount){
+        bank.accounts.Add(new TransactionAccount(ownerID, 0.00));
+    }
     MainMenu(ref bank);
 }
 
