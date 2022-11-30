@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Bank
 {
-public class Customer{
+public class Customer{ //Creates the Customer class. "Customer" containes a first- and last name, the customers id(social security number) and an account number
     String firstName;
     String lastName;
     String id;
@@ -29,13 +29,13 @@ public class Customer{
         return lastName;
     }
 
-    public void PrintCustomer(){
+    public void PrintCustomer(){ //Show the conents of an instance of "customer"
         Console.WriteLine("Customer name: " + firstName + " " +  lastName);
         Console.WriteLine("The customers account number is " + accountNumber);
     }
 }
 
-public class Account {
+public class Account { // Creates the Account class. An account contains an owner id (the customers social security number), a balance and latest transaction (never used in the program though)
     string ownerID;
     double balance;
     int latestTransaction;
@@ -62,7 +62,7 @@ public class Account {
     }
 }
 
-public class Bank {
+public class Bank { // creates the Bank class. A bank contains a list of customers and a list of accounts.
     public List<Customer> customers;
     public List<Account> accounts;
 
