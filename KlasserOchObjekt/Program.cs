@@ -109,6 +109,8 @@ static void MainMenu(ref Bank bank){
                     ConnectAccAndCustomer(ref bank);
                 break;
             case "4":
+                    Console.WriteLine("Enter the first and last name of the owner of the account you want to check. Press enter to continue\n");
+
                     ShowCustomer(ref bank);
                 break;
             case "5":
@@ -117,6 +119,7 @@ static void MainMenu(ref Bank bank){
             case "6":
                 break;
             default:
+                MainMenu(ref bank);
                 break;
         }
 
@@ -222,9 +225,8 @@ static void ConnectAccAndCustomer(ref Bank bank){
 static void ShowCustomer(ref Bank bank){
     string firstName;
     string lastName;
+    bool isACustomer = false;
     Console.Clear();
-    Console.WriteLine("Enter the first and last name of the owner of the account you want to check. Press enter to continue\n");
-    Console.ReadLine();
     while (true){
         Console.Clear();
         Console.Write("Please enter the customers first name: ");
@@ -254,9 +256,14 @@ static void ShowCustomer(ref Bank bank){
     for(int b = 0; b < bank.customers.Count; b++){
         if(firstName == bank.customers[b].GetFirstName() && lastName == bank.customers[b].GetLastName()){
         bank.customers[b].PrintCustomer();
+        isACustomer = true;
         }
-        else{
-        }
+    }
+    if (!isACustomer)
+    {
+        Console.WriteLine("Hey! This customer name does not exist. Try again by pressing enter!");
+        Console.ReadLine();
+        ShowCustomer(ref bank);
     }
     Console.ReadLine();
     MainMenu(ref bank);
