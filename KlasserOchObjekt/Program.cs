@@ -54,11 +54,6 @@ public class Account { // Creates the Account class. An account contains an owne
     public void AddToBalance(double addBalance){
         balance += addBalance;
     }
-
-    /*public Account(String ownerID, double balance) {
-        this.ownerID = ownerID;
-        this.balance = balance;
-    }*/
 }
 
 public class SavingsAccount : Account{
